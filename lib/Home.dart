@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutterapp/Listlogo.dart';
 import 'package:flutterapp/Danhmucsanpham.dart';
+import 'package:flutterapp/Cart.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -47,7 +48,11 @@ class _Home extends State<Home> {
               Icons.shopping_cart,
               color: Colors.white,
             ),
-            onPressed: () => {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => new Cart(),
+              ));
+            },
           )
         ],
       ),
@@ -83,7 +88,11 @@ class _Home extends State<Home> {
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => new Cart(),
+                ));
+              },
               child: ListTile(
                 title: Text('Giỏ hàng'),
                 leading: Icon(Icons.shopping_basket),
