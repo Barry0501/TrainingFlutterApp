@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -9,11 +15,26 @@ class Login extends StatefulWidget {
 }
 
 class _Login extends State<Login> {
+  bool check = false;
+  /*FirebaseAuth _auth = FirebaseAuth.instance;
+  bool isLogged = false;
+  Future<FirebaseUser> _loginWithFaceBook() async {
+    var facebookLogin = new FacebookLogin();
+    var ressult = await facebookLogin
+        .logInWithReadPermissions(['email', 'puclic_profile']);
+
+    FacebookAccessToken myToken = ressult.accessToken;
+    AuthCredential credential =
+        FacebookAuthProvider.getCredential(accessToken: myToken.token);
+    FirebaseUser firebaseUser =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+  }*/
+
   @override
   Widget build(BuildContext context) {
     final _height = MediaQuery.of(context).size.height;
     final _width = MediaQuery.of(context).size.width;
-    Color _coloreye = Colors.grey;
+
     return Scaffold(
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
@@ -66,21 +87,22 @@ class _Login extends State<Login> {
                             padding: EdgeInsets.only(left: 10.0),
                             child: TextField(
                               decoration: InputDecoration(
-                                //disabledBorder: Boder,
-                                border: InputBorder.none,
-                                icon: Icon(Icons.vpn_key),
-                                labelText: 'Nhập Mật Khẩu',
-                                suffixIcon: InkWell(
-                                  child: Icon(
-                                    Icons.remove_red_eye,
-                                    color: _coloreye,
-                                  ),
-                                  onTap: () {
-                                    print("??");
-                                    _ChangeColorEyePassWord(_coloreye);
-                                  },
-                                ),
-                              ),
+                                  //disabledBorder: Boder,
+                                  border: InputBorder.none,
+                                  icon: Icon(Icons.vpn_key),
+                                  labelText: 'Nhập Mật Khẩu',
+                                  suffixIcon: IconButton(
+                                    icon: Icon(Icons.remove_red_eye),
+                                    color: check == true
+                                        ? Colors.grey
+                                        : Colors.blue,
+                                    onPressed: () {
+                                      print(check);
+                                      setState(() {
+                                        check = !check;
+                                      });
+                                    },
+                                  )),
                             ),
                           ),
                         ),
@@ -96,9 +118,7 @@ class _Login extends State<Login> {
                   child: InkWell(
                     highlightColor: Colors.red,
                     splashColor: Colors.black,
-                    onTap: () {
-                      _ChangeColorEyePassWord(_coloreye);
-                    },
+                    onTap: () {},
                     child: Container(
                       height: 50,
                       child: Center(
@@ -129,7 +149,9 @@ class _Login extends State<Login> {
                         child: InkWell(
                           highlightColor: Colors.red,
                           splashColor: Colors.black,
-                          onTap: () {},
+                          onTap: () {
+                             //_loginWithFaceBook();
+                          },
                           child: Container(
                             height: 50,
                             child: Center(
@@ -187,15 +209,5 @@ class _Login extends State<Login> {
     );
   }
 
-  void _ChangeColorEyePassWord(Color _coloreye) {
-    setState(() {
-      if (_coloreye == Colors.grey) {
-        // print("mau xám");
-        _coloreye = Colors.blue;
-      } else {
-        _coloreye = Colors.grey;
-        //print("màu xanh");
-      }
-    });
-  }
+  void _ChangeColorEyePassWord(Color _coloreye) {}
 }
