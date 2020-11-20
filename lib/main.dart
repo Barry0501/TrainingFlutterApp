@@ -1,64 +1,42 @@
-import 'package:flutter/material.dart';
+// Copyright 2018 The Flutter Architecture Sample Authors. All rights reserved.
+// Use of this source code is governed by the MIT license that can be found
+// in the LICENSE file.
 
-void main() => runApp(MyApp());
+import 'dart:async';
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
+import 'package:flutter/widgets.dart';
+import 'package:key_value_store_flutter/key_value_store_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+import 'app.dart';
+import 'src/key_value_stogare.dart';
+import 'src/repo/local_storage_repo.dart';
+import 'src/repo/reactive_local_storage_repo.dart';
+import 'src/repo/user_entity.dart';
+import 'src/repo/user_repository.dart';
+import 'src/todos_interactor.dart';
 
-  final String title;
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+  runApp(BlocApp(
+    todosInteractor: TodosInteractor(
+      ReactiveLocalStorageRepository(
+        repository: LocalStorageRepository(
+          localStorage: KeyValueStorage(
+            'bloc_todos',
+            FlutterKeyValueStore(await SharedPreferences.getInstance()),
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    ),
+    userRepository: AnonymousUserRepository(),
+  ));
+}
+
+class AnonymousUserRepository implements UserRepository {
+  @override
+  Future<UserEntity> login() {
+    return Future.value(UserEntity(id: 'anonymous'));
   }
 }
